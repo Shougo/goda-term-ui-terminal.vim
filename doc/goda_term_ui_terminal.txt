@@ -1,0 +1,68 @@
+*goda_term_ui_terminal.txt*	The UI terminal of goda-term.vim
+
+Author: Shougo <Shougo.Matsu at gmail.com>
+License: MIT license
+
+==============================================================================
+INSTALL                                        *goda-term-ui-terminal-install*
+
+The UI "terminal" of goda-term.vim (|goda-term|), which it needs:
+
+https://github.com/Shougo/goda-term.vim
+
+Add it to your configuration (|goda-term-configuration|):
+>go
+	import "github.com/Shougo/goda-term-ui-terminal.vim/ext/ui/terminal"
+
+	b.AddUI(terminal.New())
+<
+
+==============================================================================
+UI TERMINAL                                             *goda-term-ui-terminal*
+
+A terminal job of Vim or Neovim.  Its buffer has the 'filetype'
+"goda-term-terminal".
+
+PARAMS                                           *goda-term-ui-terminal-params*
+
+command			(string[])
+		The job.  Required.
+
+cwd			(string)
+		Its directory.
+		Default: the current directory
+
+extraTermOptions	(dict)
+		More options of |term_start()| (Vim) or |jobstart()| (Neovim).
+
+floatingBorder		(string | list)
+		The border of a floating window (Neovim).
+
+promptPattern		(string)
+		The prompt of the job, a regexp: executeLine, nextPrompt,
+		pastePrompt, previousPrompt and the input need it.
+
+split			(string)
+		"" (the current window), "horizontal", "vertical", "farleft",
+		"farright" or "floating" (Neovim).
+
+startInsert		(boolean)
+		Enter Terminal-Job mode (Neovim; Vim always does).
+
+winCol, winHeight, winRow, winWidth	(number)
+		The size and the place of the window (50, 15, 20, 80).
+
+ACTIONS                                         *goda-term-ui-terminal-actions*
+
+cd		{directory}: the job goes there.
+executeLine	The command line of the cursor, executed again.
+insert		{str}: typed in the job.
+nextPrompt	The cursor goes to the next prompt.
+pastePrompt	The command line of the cursor, typed in the job.
+previousPrompt	The cursor goes to the previous prompt.
+redraw		Redraw the terminal.
+send		{str}: typed in the job, and executed.
+setCommandLine	{str}: typed in the job.
+
+==============================================================================
+vim:tw=78:ts=8:noet:ft=help:norl:
