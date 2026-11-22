@@ -117,8 +117,14 @@ function! s:terminal() abort
       " The job has $EDITOR (for "git commit"): it is set before it starts.
       if !has('win32')
         call s:check('$EDITOR', $EDITOR !=# '', v:true)
-        call goda_term#ui#do_action('send', #{str: 'echo "editor=$EDITOR"'})
-        call s:wait('len(s:lines(' . string('^editor=' . escape($EDITOR, '\.~[]*') . '$') . ')) == 1')
+        " The shell compares: $EDITOR printed may wrap in the terminal (a
+        " long path of the server); the result is short.
+        call goda_term#ui#do_action('send', #{str:
+              \ 'echo "editor-$([ "$EDITOR" = ' . shellescape($EDITOR)
+              \ . ' ] && echo ok || echo ng)"'})
+        call s:wait('!empty(s:lines(''^editor-\(ok\|ng\)$''))')
+        call s:check('$EDITOR of the job', s:lines('^editor-\(ok\|ng\)$'),
+              \ ['editor-ok'])
       endif
     endif
 
