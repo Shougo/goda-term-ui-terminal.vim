@@ -75,10 +75,11 @@ function! s:terminal() abort
   else
     let [command, prompt, extra] = [['sh'], '% ', #{env: #{PS1: '% '}}]
   endif
-  call goda_term#custom#patch_global(#{uiParams: #{terminal: #{
+  " The options of the UI, given to every start.
+  let s:terminal = #{uiParams: #{terminal: #{
         \ command: command, promptPattern: prompt, extraTermOptions: extra,
-        \ }}})
-  call goda_term#start(#{name: 'term', ui: 'terminal'})
+        \ }}}
+  call goda_term#start(extend(#{name: 'term', ui: 'terminal'}, s:terminal))
   let s:buf = bufnr('%')
   call s:check('filetype', &filetype, 'goda-term-terminal')
   call s:check('variables', [b:goda_term_name, t:goda_term_ui_terminal_last_name,
@@ -132,7 +133,7 @@ function! s:terminal() abort
 
   " Shown again from another window: the same buffer and job.
   wincmd n
-  call goda_term#start(#{name: 'term', ui: 'terminal'})
+  call goda_term#start(extend(#{name: 'term', ui: 'terminal'}, s:terminal))
   call s:check('again', bufnr('%'), s:buf)
 
   " An unknown action says so.
@@ -140,10 +141,9 @@ function! s:terminal() abort
   call goda_term#ui#do_action('unknown')
   call s:check('unknown action', s:errmsgs() =~# 'no such action', v:true)
   " Without a command.
-  call goda_term#custom#patch_local('nocmd', #{uiParams: #{terminal: #{command: []}}})
-  call goda_term#start(#{name: 'nocmd', ui: 'terminal'})
+  call goda_term#start(#{name: 'nocmd', ui: 'terminal', uiParams: #{terminal: #{command: []}}})
   call s:check('no command', s:errmsgs() =~# '"command"', v:true)
-  call s:check('get_current', goda_term#custom#get_current('term').ui, 'terminal')
+  call s:check('get_current', goda_term#get_current('term').ui, 'terminal')
 endfunction
 
 try
